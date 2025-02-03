@@ -65,29 +65,32 @@
     </div>
 
     <script>
-       document.getElementById("repoForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const repoUrl = document.getElementById("repo_url").value;
-    const reportDiv = document.getElementById("report");
-    reportDiv.textContent = "Analyzing...";
+        document.getElementById("repoForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const repoUrl = document.getElementById("repo_url").value;
+            const reportDiv = document.getElementById("report");
+            reportDiv.textContent = "Analyzing...";
 
-    try {
-        const response = await fetch("/", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: `repo_url=${encodeURIComponent(repoUrl)}`,
+            try {
+                const response = await fetch("/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: `repo_url=${encodeURIComponent(repoUrl)}`,
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                reportDiv.textContent = data.report || data.error;
+            } catch (error) {
+                console.error("Fetch error:", error);
+                reportDiv.textContent = `Error: ${error.message}`;
+            }
         });
-
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-        const data = await response.json();
-        reportDiv.textContent = data.report || data.error;
-    } catch (error) {
-        console.error("Fetch error:", error);
-        reportDiv.textContent = `Error: ${error.message}`;
-    }
-});
     </script>
 </body>
 
