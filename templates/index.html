@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Repo Vulnerability Scanner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        input[type="submit"] {
+            padding: 10px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .report {
+            margin-top: 20px;
+            white-space: pre-wrap;
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>GitHub Repo Vulnerability Scanner</h1>
+        <form id="repoForm">
+            <input type="text" id="repo_url" name="repo_url" placeholder="Enter GitHub Repository URL" required>
+            <input type="submit" value="Analyze">
+        </form>
+        <div id="report" class="report"></div>
+    </div>
+
+    <script>
+       document.getElementById("repoForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const repoUrl = document.getElementById("repo_url").value;
+    const reportDiv = document.getElementById("report");
+    reportDiv.textContent = "Analyzing...";
+
+    try {
+        const response = await fetch("/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: `repo_url=${encodeURIComponent(repoUrl)}`,
+        });
+
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const data = await response.json();
+        reportDiv.textContent = data.report || data.error;
+    } catch (error) {
+        console.error("Fetch error:", error);
+        reportDiv.textContent = `Error: ${error.message}`;
+    }
+});
+    </script>
+</body>
+
+</html>
