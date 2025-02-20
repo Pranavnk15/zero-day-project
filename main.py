@@ -12,7 +12,7 @@ app.config["TEMPLATES_AUTO_RELOAD"] = False
 
 # GitHub API details
 GITHUB_API_URL = "https://api.github.com/repos"
-GITHUB_TOKEN = "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"  # Replace with your GitHub token
+GITHUB_TOKEN = ""  # Replace with your GitHub token
 
 def fetch_repo_contents(repo_url, path=""):
     """
